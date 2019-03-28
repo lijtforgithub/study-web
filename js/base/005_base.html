@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+
+		<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
+		Remove this if you use the .htaccess -->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+		<title>005_base</title>
+		<meta name="description" content="">
+		<meta name="author" content="LiJingTang">
+
+		<meta name="viewport" content="width=device-width; initial-scale=1.0">
+
+		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+		<link rel="shortcut icon" href="../images/favicon.ico">
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+		<script type="text/javascript" charset="UTF-8">
+		/**
+		 * break语句
+		 */	
+		var sum = 0, success = false;
+
+		function getData(matrix) {
+		  compute_sum : if (matrix) {
+		    for (var x = 0; x < matrix.length; x++) {
+		      var row = matrix[x];
+		      if (!row) break compute_sum;
+		      for (var y = 0; y < row.length; y++) {
+		        var cell = row[y];
+		        if (isNaN(cell)) break compute_sum;
+		        sum += cell;
+		      }
+		    }
+		    
+		    success = true;
+		  } 
+		  
+		  return 'sum = ' + sum + ' ; success = ' + success;
+		}
+		
+		console.info(getData([[1, 2], [2, 3]]));
+		
+		
+		/**
+		 * with语句
+		 */
+		var obj = {x : 1};
+		with(obj)x = 2;
+		console.info(obj.x);
+		
+		(function f(){
+			try {
+			    var n = Number(window.prompt('请输入一个正整数', ''));
+			    alert(n);
+			  } catch(ex) {
+			    alert(ex);
+			  }
+		})();
+		
+		
+		/**
+		 * 严格模式
+		 */
+		var hasStricMode = (function() {
+		  'use strict';
+		  return this === undefined;
+		}());
+		
+		console.info(window.hasStricMode);
+		
+		</script>
+	</head>
+
+	<body>
+		<div>
+			<header>
+				<h1>JavaScript语言基础-005</h1>
+			</header>
+			<nav>
+				<p>
+					<a href="/">Home</a>
+				</p>
+				<p>
+					<a href="/contact">Contact</a>
+				</p>
+			</nav>
+
+			<div>
+				<h5>break和continue是JavaScript中唯一可以使用语句标签的语句。</h5>
+				<h5>不管break语句带不带标签，它的控制权都无法越过函数的边界。不能从函数内部通过这个标签来跳转到函数的外部。</h5>
+				<h5>return语句可以单独使用而不必带有表达式，这样的话函数也会向调用程序返回undefined。</h5>
+				<h5>一个Error对象有一个name属性表示错误类型，一个message属性用来存放传递给构造函数的字符串。</h5>
+				<h5>try、catch和finally语句块都需要使用花括号括起来，这里的花括号是必须的，即使从句中只有一条语句也不能省略。</h5>
+				<h5>和普通的变量不同，这条catch子句中的标识符具有块级作用域，它只在catch语句块内有定义。</h5>
+				<h5>use strict是ECMAScript5引入的一条指令。指令不是语句。它只能出现在脚本代码的开始或者函数体的开始、任何实体语句之前。</h5>
+			</div>
+
+			<footer>
+				<p>
+					&copy; Copyright  by LiJingTang
+				</p>
+			</footer>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+
+		<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
+		Remove this if you use the .htaccess -->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+		<title>003_base</title>
+		<meta name="description" content="">
+		<meta name="author" content="LiJingTang">
+
+		<meta name="viewport" content="width=device-width; initial-scale=1.0">
+
+		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+		<link rel="shortcut icon" href="../images/favicon.ico">
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+		<script type="text/javascript" charset="UTF-8">
+		/**
+		 * 声明变量
+		 */
+		v = 'test';
+		console.error(window.v);
+		
+		function test() {
+			i = 'hello var'; // 全局变量
+		}
+		
+		window.test();
+		console.error(window.i);
+		
+		
+		/**
+		 * 变量作用域
+		 */
+		var scope = 'global scope';
+		function checkScope() {
+			var scope = 'local scope';
+			function nested() {
+				var scope = 'nested scope';
+				return scope;
+			}
+			return nested();
+		}
+		console.info(checkScope());
+		
+		/** 没有块级作用域 */
+		function testScope(obj) {
+		  var i = 0;
+		  if (typeof obj == 'object') {
+		    var j = 0;
+		    for (var k = 0; k < 2; k++) {
+		      console.info(k);
+		    }
+		    console.warn(k);
+		  }
+		  console.error(j);
+		}
+		testScope(new Object());
+		
+		/** 模拟块级作用域 */
+		function blockScope () {
+			(function() {
+				for (var k = 0; k < 2; k++) {
+		      		console.info(k);
+		    	}
+		    })();
+			//console.info(k); // 报错:匿名函数立即执行完毕之后k被垃圾回收器回收
+		}
+		blockScope();
+		
+		/** 声明提前 */
+		function funScope() {
+		  console.info(scope); // =>undefined 只是声明提前 赋值语句不会
+		  var scope = 'local';
+		  console.info(scope);
+		}
+		funScope();
+		
+		/** 作为属性的变量 */
+		var trueval = 1;
+		fakevar = 2;
+		console.info('trueval - ' + (delete trueval));		
+		console.info('fakevar - ' + (delete fakevar));
+		
+		
+		/**
+		 * 如果一个构造函数返回了一个对象值，那么这个对象就作为整个对象创建表达式的值，新创建的对象就废弃了
+		 */
+		function Obj(x, y) {
+			this.x = x;
+			this.y = y;
+			
+			return ({x : 1, y : 1});
+		}
+		console.info(new Obj(2, 2));
+
+		console.info(2 + null); // null 转为0
+		
+		</script>
+	</head>
+
+	<body>
+		<div>
+			<header>
+				<h1>JavaScript语言基础-003</h1>
+			</header>
+			<nav>
+				<p>
+					<a href="/">Home</a>
+				</p>
+				<p>
+					<a href="/contact">Contact</a>
+				</p>
+			</nav>
+
+			<div>
+				<h5>如果未在var声明语句中给变量指定初始值，那么给它的初始值就是undefined。</h5>
+				<h5>使用var语句重复声明变量是合法且无害的。如果给一个未声明的变量赋值，JavaScript实际上会给全局对象创建一个同名属性。</h5>
+				<h5>在函数体内，局部变量的优先级高于同名的全局变量。</h5>
+				<h5>JavaScript中没有块级作用域。取而代之的是函数作用域：变量在声明它们的函数体以及这个函数嵌套的任意函数体内都是有定义的。</h5>
+				<h5>函数作用域是指在函数内声明的所有变量在函数体内始终可见的。声明提前。</h5>
+				<h5>JavaScript全局变量是全局对象的属性。局部变量当做跟函数调用相关的某个对象的属性。</h5>
+				<h5>使用var声明的变量是不可配置的：不能用delete运算符删除。相反未使用var的可以删除。</h5>
+				<h5>JavaScript作用域链:变量可以一层一层的向上进行追溯可以访问它的上级。所以定义全局变量效率比较低。</h5>
+				<h5>JavaScript对数组初始化表达式进行求值得时候，数组初始化表达式中的元素表达式也都会各自计算一次。每次计算的值有可能不同。</h5>
+				<h5>数组逗号之间的元素可以省略，会填充值undefined。结尾处可以留下单个逗号，不会创建一个新的值为undefined的元素。</h5>
+				<h5>如果一个对象创建表达式不需要传入任何参数给构造函数的话，空括号可以省略。new Object</h5>
+				<h5>加号的转换规则优先考虑字符串连接。如果其中一个操作数是字符串或者转换为字符串的对象，另一个操作数将会转为字符串。</h5>
+				<h5>==如果一个值是数字，另一个是字符串，先将字符串转换为数字，然后使用转换后的值进行比较。</h5>
+				<h5>比较操作符的操作数可能是任意类型。只有数字和字符串才能真正执行比较操作。</h5>
+				<h5>如果一个操作数是NaN，那么比较操作符总是返回false。</h5>
+				<h5>比较运算符和加号运算符不同。更偏爱数字，只有在两个操作数都是字符串的时候，才会进行字符串比较。</h5>
+			</div>
+
+			<footer>
+				<p>
+					&copy; Copyright  by LiJingTang
+				</p>
+			</footer>
+		</div>
+	</body>
+</html>

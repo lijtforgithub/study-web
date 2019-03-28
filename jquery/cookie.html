@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cookie</title>
+    <script type="text/javascript" src="jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="jquery.cookie.js"></script>
+</head>
+<body>
+
+</body>
+<script type="text/javascript">
+    $(function() {
+        console.info('start...');
+        $.cookie('name', 'value', {path: '/', expires: 7});
+        $.cookie('first-name', 'first-value', {expires: 7, path: '/'});
+
+        console.log($.cookie('name'));
+    });
+</script>
+</html>

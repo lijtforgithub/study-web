@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+
+		<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
+		Remove this if you use the .htaccess -->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+		<title>004_base</title>
+		<meta name="description" content="">
+		<meta name="author" content="LiJingTang">
+
+		<meta name="viewport" content="width=device-width; initial-scale=1.0">
+
+		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+		<link rel="shortcut icon" href="../images/favicon.ico">
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+		<script type="text/javascript" charset="UTF-8">
+		/**
+		 * in运算符
+		 */
+		var point = {x : 1, y : 1};
+		console.info('x' in point);
+		
+		
+		/**
+		 * 逻辑运算符
+		 */
+		console.info(1 && 2);
+		/*
+		if (a == b) stop();
+		(a == b) && stop();
+		var max = max_width || preferences.max_width || 50; // 如果max_width已经定义了，直接使用它；否则在preferences对象中查找max_width 如果没有定义它，则使用一个写死的常量
+		*/
+		
+		
+		/**
+		 * 赋值运算符=
+		 */
+		var v;
+		console.info((v = '赋值表达式'));
+		
+		/*
+		 * a op= b 和 a = a op b只有a具有副作用的表达式的时候，两者才不等价。在第二个表达式中a计算了两次。
+		 * data[i++] *= 2; 和   data[i++] = data[i++] * 2;
+		 */
+		
+		
+		/**
+		 * eval()
+		 */
+		console.info(eval(10)); // 如果传入的参数不是字符串，直接返回这个参数
+		console.info(eval('v = "eval()赋值表达式"')); // 如果传入的参数不是字符串，直接返回这个参数
+		
+		var geval = eval;
+		var x = 'gloal', y = 'gloal';
+		function f() {
+		  var x = 'local';
+		  eval('x += "changed"'); // 直接调用 在调用它的上下文作用域内执行
+		  return x;
+		}
+		function g() {
+		  var y = 'local';
+		  geval('y += "changed"'); // 间接调用 则使用全局对象作为其上下文作用域 并且无法读、写、定义局部变量和函数。
+		  return y;
+		}
+		console.info(f(), x);
+		console.info(g(), y);
+		
+		
+		/**
+		 * typeof
+		 */
+		console.info(typeof NaN); // =>number
+		console.info(typeof []); // =>object
+		console.info(typeof (new Date())); // =>object
+		
+		
+		/**
+		 * 函数
+		 */
+		var square = function(x) { return x * x; }; // 函数定义表达式
+		function f(x) { return x + 1; } // 函数声明语句
+		
+		
+		/**
+		 * for/in
+		 */
+		var o = {x : 1, y : 1};
+		var a = [], i = 0;
+		for (a[i++] in o);
+		console.info(a); // 对象所有属性复制到一个数组中
+		
+		</script>
+	</head>
+
+	<body>
+		<div>
+			<header>
+				<h1>JavaScript语言基础-004</h1>
+			</header>
+			<nav>
+				<p>
+					<a href="/">Home</a>
+				</p>
+				<p>
+					<a href="/contact">Contact</a>
+				</p>
+			</nav>
+
+			<div>
+				<h5>in运算符左操作数是一个字符串或可以转换为字符串，右操作数是一个对象。</h5>
+				<h5>instanceof运算符左操作数是一个对象，右操作数标识对象的类。所有的对象都是Object的实例。判断也会包含对父类的检测。左操作数不是对象的话，返回false。右操作数不是函数，抛异常。</h5>
+				<h5>逻辑与首先计算左操作数的值，如果计算结果是假值，简单地返回左操作数的值。当左操作是真值时，将计算右操作数的值并将其返回作为整个表达式的计算结果。</h5>
+				<h5>赋值表达式的值就是右操作数的值。</h5>
+				<h5>eval()只有一个参数。如果传入的参数不是字符串，它直接返回这个参数。如果编译成功，则开始执行这段代码，并返回字符串中的最后一个表达式或语句的值，如果最后一个表达式或语句没有值，则最终返回undefined。</h5>
+				<h5>eval()它使用了调用它的变量作用域环境。</h5>
+				<h5>直接调用eval()时，它总是在调用它的上下文作用域内执行。其他间接调用则使用全局对象作为其上下文作用域。</h5>
+				<h5>typeof运算符返回表示操作数类型的一个字符串。</h5>
+				<h5>delete删除属性或者删除数组元素不仅仅是设置了一个undefined的值。当删除一个属性时，这个属性将不再存在。读取一个不存在的属性将返回undefined，但可以通过in运算符来检测这个属性是否在对象中存在。</h5>
+				<h5>void运算符：操作数会照常计算，但忽略计算结果并返回undefined。</h5>
+				<h5>JavaScript需要循环体至少包含一条语句。单独一个分号来表示一条空语句。</h5>
+				<h5>函数声明语句通常出现在JavaScript代码的最顶层，也可以嵌套在其他函数体内。但在嵌套时，函数声明只能出现在所嵌套函数的顶部。不能出现在if语句、while循环或其他任何语句中。</h5>
+				<h5>函数声明语句中的函数名是一个变量，变量指向函数对象。</h5>
+				<h5>和通过var声明变量一样，函数定义语句中的函数被显式的提前到了脚本或函数的顶部。因此它们在整个脚本和函数内都是可见的。</h5>
+				<h5>使用var的话，只有变量声明提前了，初始化代码仍然在原来的位置。然而函数声明语句，函数名称和函数体均提前：脚本中的所有函数和函数中所有嵌套的函数都会在当前上下文中其他代码之前声明。也就是说，可以在声明一个函数之前调用它。</h5>
+				<h5>switch中的case相同是按照 === 运算符进行比较的。</h5>
+				<h5>for (variable in object) statement 在每次循环之前，JavaScript都会先计算variable表达式的值，并将属性名赋值给它。</h5>
+				<h5>如果for/in的循环体删除了还未枚举的属性，那么这个属性将不会再枚举到。循环体中新定义的属性通常也不会枚举到。</h5>
+			</div>
+
+			<footer>
+				<p>
+					&copy; Copyright  by LiJingTang
+				</p>
+			</footer>
+		</div>
+	</body>
+</html>
