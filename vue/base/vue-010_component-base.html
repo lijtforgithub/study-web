@@ -4,28 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="shortcut icon" href="../images/vue.png">
+    <link rel="shortcut icon" href="../../images/vue.png">
     <title>Vue-ComponentBase</title>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 </head>
 <body>
-    <div id="components-demo">
+    <div id="example-1">
         <button-counter></button-counter>
         <button-counter></button-counter>
         <button-counter></button-counter>
     </div>
-    <div id="blog-post-demo">
+
+    <h3>通过 Prop 向子组件传递数据</h3>
+    <div id="example-2">
+        <blog-post title="My journey with Vue"></blog-post>
+        <blog-post title="Blogging with Vue"></blog-post>
+        <blog-post title="Why Vue is so fun"></blog-post>
+    </div>
+    
+    <div id="example-3">
         <blog-post v-for="post in posts" v-bind:key="post.id" v-bind:title="post.title"></blog-post>
     </div>
 
-    <div id="box">
+    <div id="example-4">
+        <div :style="{ fontSize: postFontSize + 'em' }">
+            <blog v-on:enlarge-text="postFontSize += 0.1" v-for="post in posts" v-bind:key="post.id" v-bind:post="post"></blog>
+        </div>
+    </div>
+
+    <div id="example-5">
+        <input v-model="testText">
+        <input v-bind:value="testText" v-on:input="testText = $event.target.value">
+        <br />
+        <custom-input v-model="searchText"></custom-input>
+        {{ searchText }}
+    </div>
+
+    <div id="example-6">
         <alert-box>
             Something bad happened.
         </alert-box>
     </div>
 
+    <div id="example-7">
+        <home></home>
+        <posts></posts>
+        <archive></archive>
+        <component v-bind:is="dynamic"></component>
+        活动的是：{{dynamic}}
+    </div>
+
 </body>
 <script>
+    // 注册组件 button-counter
     Vue.component('button-counter', {
         // data 必须是一个函数
         data: function () {
@@ -35,24 +66,68 @@
         },
         template: '<button v-on:click="count++">You clicked me {{ count }} times.</button>'
     });
-
-    new Vue({ el: '#components-demo' });
-
+    new Vue({ el: '#example-1' });
+    
+    
+    // 注册组件blog-post 通过 Prop 向子组件传递数据
     Vue.component('blog-post', {
         props: ['title'],
-        template: '<h3>{{ title }}</h3>'
+        template: '<h5>{{ title }}</h5>'
     });
-
+    new Vue({ el: '#example-2' });
     new Vue({
-        el: '#blog-post-demo',
+        el: '#example-3',
         data: {
             posts: [
-                { id: 1, title: 'My journey with Vue' },
-                { id: 2, title: 'Blogging with Vue' },
-                { id: 3, title: 'Why Vue is so fun' }
+                { id: 1, title: '为天地立心' },
+                { id: 2, title: '为生民立命' },
+                { id: 3, title: '为往圣继绝学' },
+                { id: 4, title: '为万世开太平' }
             ]
         }
     });
+
+
+    Vue.component('blog', {
+        props: ['post'],
+        template: `
+            <div class="blog">
+                <h3>{{ post.title }}</h3>
+                <button v-on:click="$emit('enlarge-text')">
+                    Enlarge text
+                </button>
+                <div v-html="post.content"></div>
+            </div>
+        `
+    });
+    new Vue({
+        el: '#example-4',
+        data: {
+            posts: [
+                { id: 1, title: '善欲人见', content: '并非真善监听子组件事件' }
+            ],
+            postFontSize: 1
+        }
+    });
+
+
+    Vue.component('custom-input', {
+        props: ['value'],
+        template: `
+            <input
+            v-bind:value="value"
+            v-on:input="$emit('input', $event.target.value)"
+            >
+        `
+    });
+    new Vue({
+        el: '#example-5',
+        data: {
+            testText: '',
+            searchText: '在组件上使用 v-model'
+        }
+    });
+
 
     Vue.component('alert-box', {
         template: `
@@ -63,6 +138,31 @@
         `
     });
 
-    new Vue({ el: '#box' });
+    new Vue({ el: '#example-6' });
+    
+    
+    Vue.component('home', {
+        template: '<h5>Home</h5>'
+    });
+    Vue.component('posts', {
+        template: '<h5>Posts</h5>'
+    });
+    Vue.component('archive', {
+        template: '<h5>Archive</h5>'
+    });
+    
+    new Vue({ 
+        el: '#example-7',
+        data: {
+            dynamic: 'home'
+        }
+    });
 </script>
+<style>
+    .demo-alert-box {
+        padding: 10px 20px;
+        background: #f3beb8;
+        border: 1px solid #f09898;
+    }
+</style>
 </html>

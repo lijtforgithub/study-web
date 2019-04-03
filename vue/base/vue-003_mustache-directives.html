@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="shortcut icon" href="../images/vue.png">
+    <link rel="shortcut icon" href="../../images/vue.png">
     <title>Vue-TemplateGrammar</title>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 </head>
 <body>
     <h2>“Mustache”语法 (双大括号)</h2>
-    <div id="app">
+    <div id="app-1">
         <span>Message: {{ msg }}</span><br />
         <span v-once>这个将不会改变: {{ msg }}</span>
 
@@ -27,7 +27,7 @@
     </div>
 
     <h2>指令 (Directives) </h2>
-    <div id="app2">
+    <div id="app-2">
         <p v-if="seen">现在你看到我了</p>
         <a :href="baidu">百度一下 你会知道</a>
         <a @click="doSomething">Click</a>
@@ -40,8 +40,8 @@
 </body>
 <script>
     // Mustache 语法
-    var app = new Vue({
-        el: '#app',
+    var app1 = new Vue({
+        el: '#app-1',
         data: {
             msg: 'Hello Vue!',
             rawHtml: '<span style="color:red">This should be red</span>',
@@ -57,7 +57,7 @@
     // Mustache 语法不能作用在 HTML 特性上，遇到这种情况应该使用 v-bind 指令
     // 在 DOM 中使用模板 (直接在一个 HTML 文件里撰写模板)，需要留意浏览器会把特性名全部强制转为小写
     var app2 = new Vue({
-        el: '#app2',
+        el: '#app-2',
         data: {
             seen: true,
             baidu: 'http://www.baidu.com',
