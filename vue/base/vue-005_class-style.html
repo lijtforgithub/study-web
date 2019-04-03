@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="../images/vue.png">
+    <title>Vue-ClassStyle</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <p v-bind:style="color">v-bind</p>
+    </div>
+
+    <div id="app2" class="static" v-bind:class="{ active: isActive, 'text-danger': hasError }">
+        Hello v-bind:class
+    </div>
+
+    <div id="app3" v-bind:class="classObject">classObject</div>
+
+    <div id="app4" v-bind:class="[activeClass, errorClass]"></div>
+
+    <div v-bind:class="[isActive ? activeClass : '', errorClass]"></div>
+    <div v-bind:class="[{ active: isActive }, errorClass]"></div>
+
+    <div id="app5" v-bind:style="styleObject"></div>
+    <div v-bind:style="[baseStyles, overridingStyles]"></div>
+</body>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            color: 'color:red'
+        }
+    });
+
+    var app2 = new Vue({
+        el: '#app2',
+        data: {
+            isActive: true,
+            hasError: false
+        }
+    });
+
+    var app3 = new Vue({
+        el: '#app3',
+        data: {
+            isActive: true,
+            error: null
+        },
+        computed: {
+            classObject: function () {
+                return {
+                    active: this.isActive && !this.error,
+                    'text-danger': this.error && this.error.type === 'fatal'
+                }
+            }
+        }
+    });
+
+    var app4 = new Vue({
+        el: '#app4',
+        data: {
+            activeClass: 'active',
+            errorClass: 'text-danger'
+        }
+    });
+
+    var app5 = new Vue({
+        el: '#app5',
+        data: {
+            styleObject: {
+                color: 'red',
+                fontSize: '13px'
+            }
+        }
+    });
+</script>
+</html>

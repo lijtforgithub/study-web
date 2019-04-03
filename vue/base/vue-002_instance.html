@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="../images/vue.png">
+    <title>Vue-Instance</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <h3 id="vm">{{ a }}</h3>
+
+    <div id="app">
+        <p>{{ foo }}</p>
+        <!-- 这里的 `foo` 不会更新！ -->
+        <button v-on:click="foo = 'baz'">Change it</button>
+    </div>
+</body>
+<script>
+    // 我们的数据对象
+    var data = {
+        a: 1,
+        newTodoText: '',
+        visitCount: 0,
+        hideCompletedTodos: false,
+        todos: [],
+        error: null
+    };
+
+    var vm = new Vue({
+        el: '#vm',
+        data: data
+    });
+
+    // 获得这个实例上的属性
+    // 返回源数据中对应的字段
+    console.info(vm.a == data.a); // => true
+
+    // 设置属性也会影响到原始数据
+    vm.a = 2;
+    console.info(data.a); // => 2
+
+    // ……反之亦然
+    data.a = 3;
+    console.info(vm.a); // => 3
+
+    
+    // 使用 Object.freeze()，这会阻止修改现有的属性
+    var obj = {
+        foo: 'bar'
+    };
+
+    Object.freeze(obj);
+
+    new Vue({
+        el: '#app',
+        data: obj
+    });
+
+    // Vue 实例还暴露了一些有用的实例属性与方法。它们都有前缀 $
+    console.info(vm.$data === data); // => true
+    console.info(vm.$el === document.getElementById('vm')); // => true
+
+    // $watch 是一个实例方法
+    vm.$watch('a', function (newValue, oldValue) {
+        // 这个回调将在 `vm.a` 改变后调用
+        console.log(oldValue + ' -> ' + newValue);
+    });
+
+    vm.a = 'pp';
+
+
+    // 生命周期钩子
+    new Vue({
+        data: {
+            a: 1
+        },
+        created: function () {
+            // `this` 指向 vm 实例
+            console.log('a is: ' + this.a)
+        }
+    });
+    // 不要在选项属性或回调上使用箭头函数
+
+</script>
+</html>
