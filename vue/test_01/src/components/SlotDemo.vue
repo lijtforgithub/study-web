@@ -1,9 +1,8 @@
 <template>
   <div>
-    <h1 v-once>{{ title }}</h1>
-    <slot>插槽默认内容</slot>
+    <h2 v-once>{{ title }}</h2>
+    <slot :msg="message">插槽默认内容</slot>
     <slot name="header"></slot>
-    <slot name="footer" :msg="message"></slot>
   </div>
 </template>
 
@@ -13,7 +12,7 @@ export default {
   data () {
     return {
       title: '插槽',
-      message: '子组件的内容'
+      message: '子组件向父组件传递内容'
     }
   }
 }

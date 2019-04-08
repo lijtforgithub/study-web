@@ -1,22 +1,33 @@
 <template>
   <div id="app">
     <img src="./assets/logo.png">
-    <SlotDemo>父级插槽内容 <strong>{{ scope }}</strong></SlotDemo>
+    <!-- <SlotDemo>父级插槽内容 <strong>{{ scope }}</strong></SlotDemo>
+    
     <SlotDemo><template v-slot:header><h4>具名插槽原有写法</h4></template></SlotDemo>
     <SlotDemo><header>具命插槽的新的写法</header></SlotDemo>
-    <SlotDemo><footer scope="sunObj"><h3 style="color:red;"> {{sunObj.msg}} </h3></footer></SlotDemo>
+
+    <SlotDemo>
+      <template scope="son">{{son.msg}}</template>
+    </SlotDemo> -->
+
+    <DirectiveDemo></DirectiveDemo>
+    <FilterDemo></FilterDemo>
   </div>
 </template>
 
 <script>
 import HelloWorld from './components/HelloWorld'
 import SlotDemo from './components/SlotDemo'
+import DirectiveDemo from './components/DirectiveDemo'
+import FilterDemo from './components/FilterDemo'
 
 export default {
   name: 'App',
   components: {
     HelloWorld,
-    SlotDemo
+    SlotDemo,
+    DirectiveDemo,
+    FilterDemo
   },
   data() {
     return {
