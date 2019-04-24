@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title>let命令</title>
+		<meta name="description" content="">
+		<meta name="author" content="LiJingTang">
+		<meta name="viewport" content="width=device-width; initial-scale=1.0">
+		<link rel="shortcut icon" href="../../images/es6.ico">
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+		<script type="text/javascript" charset="UTF-8">
+		/**
+		 * 1.let命令所在的代码块内有效
+		 */
+		{
+			let a = 10;
+  		var b = 1;
+		}
+		// console.log(a);
+		console.log(b);
+		
+		// for循环的计数器，就很合适使用let命令。
+		for (let i = 0; i < 10; i++) {
+		}
+
+		var a = [];
+		for (var i = 0; i < 10; i++) {
+			a[i] = function () {
+				console.log(i);
+			};
+		}
+		a[6]();
+		
+		var a = [];
+		for (let i = 0; i < 10; i++) {
+			a[i] = function () {
+				console.log(i);
+			};
+		}
+		a[6]();
+
+		// 1-1
+		for (let i = 0; i < 3; i++) {
+			let i = 'abc';
+			console.log(i);
+		}
+
+		/**
+		 * 2.不存在变量提升
+		 */ 
+		// var 的情况 
+		console.log(foo); // 输出undefined
+		var foo = 2;
+
+		// let 的情况 
+		// console.log(bar); // 报错ReferenceError
+		let bar = 2;
+
+		/**
+		 * 3.暂时性死区
+		 */
+		var tmp = 123;
+		if (true) {
+			tmp = 'abc'; // ReferenceError
+			// let tmp;
+		}
+
+		// 3-1
+		if (true) {
+			// tmp = 'abc'; // ReferenceError
+			// console.log(tmp); // ReferenceError
+
+			let tmp;
+			console.log(tmp); // undefined
+
+			tmp = 123;
+			console.log(tmp); // 123
+		}
+
+		// function fbar(x = y, y = 2) {
+		// 	return [x, y];
+		// }
+		// fbar(); // 报错
+
+		function fbar(x = 2, y = x) {
+			return [x, y];
+		}
+		console.log(fbar()); // [2, 2]
+
+		// 不报错
+		var x = x;
+		// 报错
+		// let y = y;
+		// ReferenceError: y is not defined
+
+		/**
+		 * 4.不允许重复声明
+		 */
+		// 报错
+		// function func() {
+		// 	let a = 10;
+		// 	var a = 1;
+		// }
+		// 报错
+		// function func() {
+		// 	let a = 10;
+		// 	let a = 1;
+		// }
+
+		// function func(arg) {
+		// 	let arg;
+		// }
+		// func(); // 报错
+
+		function func(arg) {
+			{
+				let arg;
+			}
+		}
+		func(); // 不报错
+
+		</script>
+	</head>
+
+	<body>
+		<div>
+			<header>
+				<h1>let命令</h1>
+			</header>
+
+			<div>
+				<h5>1.用法类似于var，但是所声明的变量，只在let命令所在的代码块内有效。</h5>
+				<h5>1-1.for循环还有一个特别之处，就是设置循环变量的那部分是一个父作用域，而循环体内部是一个单独的子作用域。</h5>
+				<h5>2.let不存在变量提升。var命令会发生“变量提升”现象，即变量可以在声明之前使用，值为undefined。</h5>
+				<h5>3.暂时性死区。只要块级作用域内存在let命令，它所声明的变量就“绑定”（binding）这个区域，不再受外部的影响。</h5>
+				<h5>3-1.ES6 明确规定，如果区块中存在let和const命令，这个区块对这些命令声明的变量，从一开始就形成了封闭作用域。凡是在声明之前就使用这些变量，就会报错。</h5>
+				<h5>3-2.“暂时性死区”也意味着typeof不再是一个百分之百安全的操作。
+						typeof x; // ReferenceError
+						let x;
+						作为比较，如果一个变量根本没有被声明，使用typeof反而不会报错。
+				</h5>
+				<h5>3-3.总之，暂时性死区的本质就是，只要一进入当前作用域，所要使用的变量就已经存在了，但是不可获取，只有等到声明变量的那一行代码出现，才可以获取和使用该变量。</h5>
+				<h5>4.不允许重复声明。let不允许在相同作用域内，重复声明同一个变量。</h5>
+			</div>
+
+			<footer>
+				<p>
+					&copy; Copyright  by LiJingTang
+				</p>
+			</footer>
+		</div>
+	</body>
+</html>
