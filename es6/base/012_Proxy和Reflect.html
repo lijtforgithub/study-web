@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>012_Proxy和Reflect</title>
+  <meta name="description" content="">
+  <meta name="author" content="LiJingTang">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="../../images/es6.ico">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <script type="text/javascript" charset="UTF-8">
+  {
+    let obj = new Proxy({}, {
+      get: function (target, key, receiver) {
+        console.log(`getting ${key}!`);
+        return Reflect.get(target, key, receiver);
+      },
+      set: function (target, key, value, receiver) {
+        console.log(`setting ${key}!`);
+        return Reflect.set(target, key, value, receiver);
+      }
+    });
+    obj.count = 1;
+    ++obj.count;
+  }
+  {
+    // 3
+    let obj = {};
+    let proxy = new Proxy(obj, {
+      get: function(target, property) {
+        return 35;
+      }
+    });
+    console.log(obj.time); // underfined
+    console.log(proxy.time); // 35
+    
+    obj = {proxy: proxy};
+    console.log(obj.proxy.time); // ？
+  }
+  {
+    let target = {};
+    let handler = {};
+    let proxy = new Proxy(target, handler);
+    proxy.a = 'b';
+    console.log(target.a); // "b"
+  }
+  {
+    const target = {
+      m: function () {
+        console.log(this === proxy);
+      }
+    };
+    const handler = {};
+    const proxy = new Proxy(target, handler);
+    target.m(); // false
+    proxy.m(); // true
+  }
+  {
+    let target = {};
+    let handler = {};
+    let {proxy, revoke} = Proxy.revocable(target, handler);
+
+    proxy.foo = 123;
+    proxy.foo // 123
+
+    revoke();
+    // proxy.foo; // TypeError: Revoked
+  }
+  {
+    let target = {};
+    new Proxy(target, {
+      set: function(target, name, value, receiver) {
+        var success = Reflect.set(target,name, value, receiver);
+        if (success) {
+          console.log('property ' + name + ' on ' + target + ' set to ' + value);
+        }
+        return success;
+      }
+    });
+    // 上面代码中，Proxy方法拦截target对象的属性赋值行为。它采用Reflect.set方法将值赋值给对象的属性，确保完成原有的行为，然后再部署额外的功能。
+    let obj = {};
+    var loggedObj = new Proxy(obj, {
+      get(target, name) {
+        console.log('get', target, name);
+        return Reflect.get(target, name);
+      },
+      deleteProperty(target, name) {
+        console.log('delete' + name);
+        return Reflect.deleteProperty(target, name);
+      },
+      has(target, name) {
+        console.log('has' + name);
+        return Reflect.has(target, name);
+      }
+    });
+  }
+  {
+    // 使用 Proxy 实现观察者模式
+    const queuedObservers = new Set();
+    const observe = fn => queuedObservers.add(fn);
+    const observable = obj => new Proxy(obj, {set});
+
+    function set(target, key, value, receiver) {
+      const result = Reflect.set(target, key, value, receiver);
+      queuedObservers.forEach(observer => observer());
+      return result;
+    }
+
+    const person = observable({
+      name: '张三',
+      age: 20
+    });
+    function print() {
+      console.log(`${person.name}, ${person.age}`);
+    }
+    observe(print);
+    person.name = '李四';
+  }
+  </script>
+<body>
+  <div>
+    <header>
+      <h1>Proxy和Reflect</h1>
+    </header>
+
+    <div>
+      <h5>1.Proxy 可以理解成，在目标对象之前架设一层“拦截”，外界对该对象的访问，都必须先通过这层拦截，因此提供了一种机制，可以对外界的访问进行过滤和改写。Proxy 这个词的原意是代理，用在这里表示由它来“代理”某些操作，可以译为“代理器”。</h5>
+      <h5>2.ES6 原生提供 Proxy 构造函数，用来生成 Proxy 实例。var proxy = new Proxy(target, handler);其中，new Proxy()表示生成一个Proxy实例，target参数表示所要拦截的目标对象，handler参数也是一个对象，用来定制拦截行为。</h5>
+      <h5>3.注意，要使得Proxy起作用，必须针对Proxy实例（上例是proxy对象）进行操作，而不是针对目标对象（上例是空对象）进行操作。</h5>
+      <h4>4.一个技巧是将 Proxy 对象，设置到object.proxy属性，从而可以在object对象上调用。var object = { proxy: new Proxy(target, handler) };</h4>
+      <h5>5.如果handler没有设置任何拦截，那就等同于直接通向原对象。</h5>
+      <h5>6.Proxy.revocable方法返回一个可取消的 Proxy 实例。</h5>
+      <h5>7.Reflect对象与Proxy对象一样，也是 ES6 为了操作对象而提供的新 API。将Object对象的一些明显属于语言内部的方法（比如Object.defineProperty），放到Reflect对象上。修改某些Object方法的返回结果，让其变得更合理。让Object操作都变成函数行为。Reflect对象的方法与Proxy对象的方法一一对应，只要是Proxy对象的方法，就能在Reflect对象上找到对应的方法。</h5>
+    </div>
+
+    <footer>
+      <p>
+        &copy; Copyright by LiJingTang
+      </p>
+    </footer>
+  </div>
+</body>
+
+</html>
