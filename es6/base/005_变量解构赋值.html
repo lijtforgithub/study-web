@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>005_变量解构赋值</title>
+  <meta name="description" content="">
+  <meta name="author" content="LiJingTang">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="../../images/es6.ico">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <script type="text/javascript" charset="UTF-8">
+  /**
+   * 数组
+   */
+  {
+    let [a, b, c] = [1, 2, 3];
+    console.log(a);
+  
+    let [foo, [[bar], baz]] = [1, [[2], 3]];
+    console.log(baz);
+    
+    let [ , , third] = ['foo', 'bar', 'baz'];
+    console.log(third);
+    
+    let [x, , y] = [1, 2, 3];
+    console.log(y);
+  
+    let [head, ...tail] = [1, 2, 3, 4];
+    console.log(head); // 1
+    console.log(tail); // [2, 3, 4]
+  
+    let [k, m, ...n] = ['a'];
+    console.log(k, m, n);
+  }
+  {
+    // 对于 Set 结构，也可以使用数组的解构赋值。
+    let [x, y, z] = new Set(['a', 'b', 'c']);
+
+    function* fibs() {
+      let a = 0;
+      let b = 1;
+      while (true) {
+        yield a;
+        [a, b] = [b, a + b];
+      }
+    }
+
+    // fibs是一个 Generator 函数（参见《Generator 函数》一章），原生具有 Iterator 接口。解构赋值会依次从这个接口获取值。
+    let [first, second, third, fourth, fifth, sixth] = fibs();
+    console.log(sixth); // 5
+  }
+
+  {
+    let [foo = true] = [];
+    console.log(foo); // true
+     
+    let [x, y = 'b'] = ['a']; // x='a', y='b'
+    console.log(x);
+  }
+  {
+    // 3
+    let [x, y = 'b'] = ['a', undefined]; // x='a', y='b'
+    console.log(y);
+    
+    let [a = 1] = [null];
+    console.log(a);
+  }
+  {
+    function f() {
+      console.log('aaa');
+    }
+
+    // 因为x能取到值，所以函数f根本不会执行
+    let [x = f()] = [1];
+  }
+
+  /**
+   * 对象
+   */ 
+  {
+    let { foo, bar } = { foo: 'aaa', bar: 'bbb' };
+    foo; // "aaa"
+    bar; // "bbb"
+  }
+  {
+    // 5-1
+    let { sin, cos } = Math;
+    const { log } = console;
+    log('hello'); // hello
+
+    // 如果变量名与属性名不一致，必须写成下面这样。
+    let obj = { first: 'hello', last: 'world' };
+    let { first: f, last: l } = obj;
+  }
+  {
+    // 实际上说明，对象的解构赋值是下面形式的简写
+    let { foo: foo, bar: bar } = { foo: 'aaa', bar: 'bbb' };
+  }
+  {
+    // 对象的解构赋值的内部机制，是先找到同名属性，然后再赋给对应的变量。真正被赋值的是后者，而不是前者。
+    let { foo: baz } = { foo: 'aaa', bar: 'bbb' };
+    console.log(baz); // "aaa"
+    // foo; // error: foo is not defined
+  }
+
+  {
+    // 6
+    const obj1 = {};
+    const obj2 = { foo: 'bar' };
+    Object.setPrototypeOf(obj1, obj2);
+
+    const { foo } = obj1;
+    console.log(foo); // "bar"
+  }
+
+  /**
+   * 字符串
+   */
+  {
+    const [a, b, c, d, e] = 'hello';
+    console.log(a);
+
+    let {length : len} = 'hello';
+    console.log(len); // 5
+  }
+
+  /**
+   * 函数
+   */ 
+  {
+    function add([x, y]){
+      return x + y;
+    }
+
+    add([1, 2]); // 3
+
+    [[1, 2], [3, 4]].map(([a, b]) => a + b); // [ 3, 7 ]
+  }
+  {
+    function move({x = 0, y = 0} = {}) {
+      return [x, y];
+    }
+
+    move({x: 3, y: 8}); // [3, 8]
+    move({x: 3}); // [3, 0]
+    move({}); // [0, 0]
+    move(); // [0, 0]
+  }
+  {
+    function move({x, y} = { x: 0, y: 0 }) {
+      return [x, y];
+    }
+
+    move({x: 3, y: 8}); // [3, 8]
+    move({x: 3}); // [3, undefined]
+    move({}); // [undefined, undefined]
+    move(); // [0, 0]
+  }
+
+  {
+    // 10-1
+    let x = 1;
+    let y = 2;
+
+    [x, y] = [y, x];
+    console.log(x);
+  }
+  {
+    // 10-2
+    // 返回一个数组
+    function example() {
+      return [1, 2, 3];
+    }
+    let [a, b, c] = example();
+
+    // 返回一个对象
+    function f() {
+      return {
+        foo: 1,
+        bar: 2
+      };
+    }
+    let { foo, bar } = f();
+  }
+  {
+    // 10-3
+    // 参数是一组有次序的值
+    function f([x, y, z]) {  }
+    f([1, 2, 3]);
+
+    // 参数是一组无次序的值
+    function m({x, y, z}) {  }
+    m({z: 3, y: 2, x: 1});
+  }
+  {
+    // 10-4
+    let jsonData = {
+      id: 42,
+      status: 'OK',
+      data: [867, 5309]
+    };
+
+    let { id, status, data: number } = jsonData;
+    console.log(id, status, number);
+  }
+  {
+    // 10-6
+    const map = new Map();
+    map.set('first', 'hello');
+    map.set('second', 'world');
+
+    for (let [key, value] of map) {
+      console.log(key + ' is ' + value);
+    }
+
+    // 获取键名
+    for (let [key] of map) {
+      // ...
+    }
+
+    // 获取键值
+    for (let [,value] of map) {
+      // ...
+    }
+  }
+  </script>
+<body>
+  <div>
+    <header>
+      <h1>变量解构赋值</h1>
+    </header>
+
+    <div>
+      <h5>1.如果解构不成功，变量的值就等于undefined。</h5>
+      <h5>2.数组结构。如果等号的右边不是数组（或者严格地说，不是可遍历的结构），那么将会报错。</h5>
+      <h5>3.ES6 内部使用严格相等运算符（===），判断一个位置是否有值。所以，只有当一个数组成员严格等于undefined，默认值才会生效。</h5>
+      <h5>4.如果默认值是一个表达式，那么这个表达式是惰性求值的，即只有在用到的时候，才会求值。</h5>
+      <h5>5.对象的解构与数组有一个重要的不同。数组的元素是按次序排列的，变量的取值由它的位置决定；而对象的属性没有次序，变量必须与属性同名，才能取到正确的值。</h5>
+      <h5>5-1.对象的解构赋值，可以很方便地将现有对象的方法，赋值到某个变量。</h5>
+      <h5>6.对象的解构赋值可以取到继承的属性。</h5>
+      <h5>7.如果要将一个已经声明的变量用于解构赋值，必须非常小心。let x; ({x} = {x: 1});</h5>
+      <h5>8.解构赋值时，如果等号右边是数值和布尔值，则会先转为对象。解构赋值的规则是，只要等号右边的值不是对象或数组，就先将其转为对象。</h5>
+      <h5>9.ES6 的规则是，只要有可能导致解构的歧义，就不得使用圆括号。</h5>
+      <h5>10.变量的解构赋值用途很多。</h5>
+      <h5>10-1.交换变量的值。</h5>
+      <h5>10-2.从函数返回多个值。函数只能返回一个值，如果要返回多个值，只能将它们放在数组或对象里返回。有了解构赋值，取出这些值就非常方便。</h5>
+      <h5>10-3.函数参数的定义。</h5>
+      <h5>10-4.提取 JSON 数据。</h5>
+      <h5>10-5.函数参数的默认值。指定参数的默认值，就避免了在函数体内部再写var foo = config.foo || 'default foo';这样的语句。
+        <pre>
+          jQuery.ajax = function (url, {
+            async = true,
+            beforeSend = function () {},
+            cache = true,
+            complete = function () {},
+            crossDomain = false,
+            global = true,
+            // ... more config
+          } = {}) {
+            // ... do stuff
+          };
+        </pre>
+      </h5>
+      <h5>10-6.遍历 Map 结构。</h5>
+      <h5>10-7.输入模块的指定方法。加载模块时，往往需要指定输入哪些方法。解构赋值使得输入语句非常清晰。const { SourceMapConsumer, SourceNode } = require("source-map");</h5>
+    </div>
+
+    <footer>
+      <p>
+        &copy; Copyright by LiJingTang
+      </p>
+    </footer>
+  </div>
+</body>
+
+</html>

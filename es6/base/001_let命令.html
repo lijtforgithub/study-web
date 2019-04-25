@@ -6,7 +6,7 @@
 		<title>001_let命令</title>
 		<meta name="description" content="">
 		<meta name="author" content="LiJingTang">
-		<meta name="viewport" content="width=device-width; initial-scale=1.0">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="shortcut icon" href="../../images/es6.ico">
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 		<script type="text/javascript" charset="UTF-8">
@@ -122,7 +122,6 @@
 
 		</script>
 	</head>
-
 	<body>
 		<div>
 			<header>
@@ -136,8 +135,10 @@
 				<h5>3.暂时性死区。只要块级作用域内存在let命令，它所声明的变量就“绑定”（binding）这个区域，不再受外部的影响。</h5>
 				<h5>3-1.ES6 明确规定，如果区块中存在let和const命令，这个区块对这些命令声明的变量，从一开始就形成了封闭作用域。凡是在声明之前就使用这些变量，就会报错。</h5>
 				<h5>3-2.“暂时性死区”也意味着typeof不再是一个百分之百安全的操作。
-						typeof x; // ReferenceError
-						let x;
+					<pre>
+					typeof x; // ReferenceError
+					let x;
+					</pre>
 						作为比较，如果一个变量根本没有被声明，使用typeof反而不会报错。
 				</h5>
 				<h5>3-3.总之，暂时性死区的本质就是，只要一进入当前作用域，所要使用的变量就已经存在了，但是不可获取，只有等到声明变量的那一行代码出现，才可以获取和使用该变量。</h5>

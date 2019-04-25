@@ -6,17 +6,100 @@
 		<title>002_块级作用域</title>
 		<meta name="description" content="">
 		<meta name="author" content="LiJingTang">
-		<meta name="viewport" content="width=device-width; initial-scale=1.0">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="shortcut icon" href="../../images/es6.ico">
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 		<script type="text/javascript" charset="UTF-8">
 		/**
-		 * 1.let命令所在的代码块内有效
+		 * 1-1 原因在于变量提升，导致内层的tmp变量覆盖了外层的tmp变量。
 		 */
+		var tmp = new Date();
+		function f() {
+			console.log(tmp);
+			if (false) {
+				var tmp = 'hello world';
+			}
+		}
+		f(); // undefined
+
+		// 1-2 变量i只用来控制循环，但是循环结束后，它并没有消失，泄露成了全局变量。
+		var s = 'hello';
+		for (var i = 0; i < s.length; i++) {
+			console.log(s[i]);
+		}
+		console.log(i); // 5
+
+		/**
+		 * 2
+		 */
+		 function f1() {
+			let n = 5;
+			if (true) {
+				let n = 10;
+			}
+			console.log(n); // 5
+		}
+		f1();
+		
+		// ES6 允许块级作用域的任意嵌套。第四层作用域无法读取第五层作用域的内部变量。
+		// {{{{
+		// 	{let insane = 'Hello World'}
+		// 	console.log(insane); // 报错
+		// }}}};
+
+		// 2-1
+		{
+			let f = function() {
+				console.info('块级作用域');
+			};
+			f();
+		}
+
+		/**
+		 * 3.块级作用域与函数声明
+		 */ 
+
+		// 情况一
+		if (true) {
+			function f() {}
+		}
+		// 情况二
+		try {
+			function f() {}
+		} catch(e) {
+			// ...
+		}
+
+		/**
+		 * 报错。原来，如果改变了块级作用域内声明的函数的处理规则，显然会对老代码产生很大影响。为了减轻因此产生的不兼容问题，
+		 * ES6 在附录 B里面规定，浏览器的实现可以不遵守上面的规定，有自己的行为方式。
+		 * 允许在块级作用域内声明函数。
+		 * 函数声明类似于var，即会提升到全局作用域或函数作用域的头部。
+		 * 同时，函数声明还会提升到所在的块级作用域的头部。
+		 * 上面三条规则只对 ES6 的浏览器实现有效，其他环境的实现不用遵守，还是将块级作用域的函数声明当作let处理
+		 */
+		// function f2() { console.log('I am outside!'); }
+		// (function () {
+		// 	if (false) {
+		// 		// 重复声明一次函数f
+		// 		function f2() { console.log('I am inside!'); }
+		// 	}
+		// 	f2();
+		// }());
+
+		// 浏览器的 ES6 环境
+		// function f() { console.log('I am outside!'); }
+		// (function () {
+		// 	var f = undefined;
+		// 	if (false) {
+		// 		function f() { console.log('I am inside!'); }
+		// 	}
+
+		// 	f();
+		// }());
 
 		</script>
 	</head>
-
 	<body>
 		<div>
 			<header>
@@ -24,7 +107,50 @@
 			</header>
 
 			<div>
-				<h5></h5>
+				<h5>1.ES5 只有全局作用域和函数作用域，没有块级作用域，这带来很多不合理的场景。</h5>
+				<h5>1-1.内层变量可能会覆盖外层变量。</h5>
+				<h5>1-2.用来计数的循环变量泄露为全局变量。</h5>
+				<h5>2.ES6 的块级作用域。let实际上为 JavaScript 新增了块级作用域。</h5>
+				<h5>2-1.块级作用域的出现，实际上使得获得广泛应用的立即执行函数表达式（IIFE）不再必要了。
+					<pre>
+							// IIFE 写法
+							(function () {
+								var tmp = ...;
+								...
+							}());
+							
+							// 块级作用域写法
+							{
+								let tmp = ...;
+								...
+							}
+					</pre>
+				</h5>
+				<h5>3.ES5 规定，函数只能在顶层作用域和函数作用域之中声明，不能在块级作用域声明。但是，浏览器没有遵守这个规定，为了兼容以前的旧代码，还是支持在块级作用域之中声明函数</h5>
+				<h5>3-1.ES6 引入了块级作用域，明确允许在块级作用域之中声明函数。ES6 规定，块级作用域之中，函数声明语句的行为类似于let，在块级作用域之外不可引用。</h5>
+				<h5>4.ES6 的块级作用域必须有大括号，如果没有大括号，JavaScript 引擎就认为不存在块级作用域。
+					<pre>
+						// 第一种写法，报错
+						if (true) let x = 1;
+						// 第二种写法，不报错
+						if (true) {
+							let x = 1;
+						}
+					</pre>
+				</h5>
+				<h5>5.函数声明也是如此，严格模式下，函数只能声明在当前作用域的顶层。
+					<pre>
+						// 不报错
+						'use strict';
+						if (true) {
+							function f() {}
+						}
+						// 报错
+						'use strict';
+						if (true)
+							function f() {}
+					</pre>
+				</h5>
 			</div>
 
 			<footer>

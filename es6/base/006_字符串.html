@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>006_字符串</title>
+  <meta name="description" content="">
+  <meta name="author" content="LiJingTang">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="../../images/es6.ico">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <script type="text/javascript" charset="UTF-8">
+  // 1  
+  for (let codePoint of 'foo') {
+    console.log(codePoint)
+  }
+  {
+    let text = String.fromCodePoint(0x20BB7);
+    for (let i = 0; i < text.length; i++) {
+      console.log(text[i]);
+    }
+    // " "
+    // " "
+    for (let i of text) {
+      console.log(i);
+    }
+  }
+  {
+    // 所有模板字符串的空格和换行，都是被保留的，比如<ul>标签前面会有一个换行。如果你不想要这个换行，可以使用trim方法消除它。
+    console.log(`
+    <ul>
+      <li>first</li>
+      <li>second</li>
+    </ul>
+    `);
+    console.log(`
+    <ul>
+      <li>first</li>
+      <li>second</li>
+    </ul>
+    `.trim());
+  }
+  {
+    // 模板字符串之中还能调用函数。
+    function fn() {
+      return "Hello World";
+    }
+    `foo ${fn()} bar`;
+
+    let func = (name) => `Hello ${name}!`;
+    func('Jack'); // "Hello Jack!"
+  }
+  {
+    console.log`模板字符串`;
+  }
+  {
+    // “标签模板”的一个重要应用，就是过滤 HTML 字符串，防止用户输入恶意内容。
+    function SaferHTML(templateData) {
+      let s = templateData[0];
+      for (let i = 1; i < arguments.length; i++) {
+        let arg = String(arguments[i]);
+
+        s += arg.replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
+
+        s += templateData[i];
+      }
+      return s;
+    }
+
+    let sender = '<script>alert("abc")<script>'; // 恶意代码
+    let message = SaferHTML`<p>${sender} has sent you a message.</p>`;
+    console.log(message);
+  }
+
+  {
+    // 使用第二个参数n时，endsWith的行为与其他两个方法有所不同。它针对前n个字符，而其他两个方法针对从第n个位置直到字符串结束。
+    let s = 'Hello world!';
+    s.startsWith('Hello'); // true
+    s.endsWith('!'); // true
+    s.includes('o'); // true
+  }
+  {
+    // repeat方法返回一个新字符串，表示将原字符串重复n次。
+    'x'.repeat(3); // "xxx"
+    'hello'.repeat(2); // "hellohello"
+
+    // 参数如果是小数，会被取整。
+    'na'.repeat(2.9); // "nana"
+  }
+  {
+    'x'.padStart(4, 'ab'); // 'abax'
+    'x'.padEnd(4, 'ab'); // 'xaba'
+    // 如果省略第二个参数，默认使用空格补全长度。
+    'x'.padStart(4) // '   x'
+  }
+  </script>
+<body>
+  <div>
+    <header>
+      <h1>字符串</h1>
+    </header>
+
+    <div>
+      <h5>1.ES6 为字符串添加了遍历器接口，使得字符串可以被for...of循环遍历。</h5>
+      <h5>2.模板字符串（template string）是增强版的字符串，用反引号（`）标识。它可以当作普通字符串使用，也可以用来定义多行字符串，或者在字符串中嵌入变量。</h5>
+      <h5>2-1.由于模板字符串的大括号内部，就是执行 JavaScript 代码，因此如果大括号内部是一个字符串，将会原样输出。</h5>
+      <h5>2-2.模板字符串甚至还能嵌套。</h5>
+      <h5>3.标签模板。标签模板其实不是模板，而是函数调用的一种特殊形式。“标签”指的就是函数，紧跟在后面的模板字符串就是它的参数。</h5>
+      <h5>4.ES2019 对字符串实例新增了trimStart()和trimEnd()这两个方法。它们的行为与trim()一致，trimStart()消除字符串头部的空格，trimEnd()消除尾部的空格。它们返回的都是新字符串，不会修改原始字符串。</h5>
+    </div>
+
+    <footer>
+      <p>
+        &copy; Copyright by LiJingTang
+      </p>
+    </footer>
+  </div>
+</body>
+
+</html>

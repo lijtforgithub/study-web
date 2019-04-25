@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>004_变量声明</title>
+  <meta name="description" content="">
+  <meta name="author" content="LiJingTang">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="../../images/es6.ico">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <script type="text/javascript" charset="UTF-8">
+  window.a = 1;
+  console.log(a); // 1
+  a = 2;
+  console.log(window.a); // 2
+
+  let b = 1;
+  console.log(window.b); // undefined
+
+  // 3.获取顶层对象
+  // 方法一
+  (typeof window !== 'undefined'
+    ? window
+    : (typeof process === 'object' &&
+        typeof require === 'function' &&
+        typeof global === 'object')
+      ? global
+      : this);
+
+  // 方法二
+  var getGlobal = function () {
+    if (typeof self !== 'undefined') { return self; }
+    if (typeof window !== 'undefined') { return window; }
+    if (typeof global !== 'undefined') { return global; }
+    throw new Error('unable to locate global object');
+  };
+  </script>
+<body>
+  <div>
+    <header>
+      <h1>变量声明</h1>
+    </header>
+
+    <div>
+      <h5>1.ES5 只有两种声明变量的方法：var命令和function命令。ES6 除了添加let和const命令，后面章节还会提到，另外两种声明变量的方法：import命令和class命令。所以，ES6 一共有 6 种声明变量的方法。</h5>
+      <h5>2.顶层对象的属性。顶层对象，在浏览器环境指的是window对象，在 Node 指的是global对象。ES5 之中，顶层对象的属性与全局变量是等价的。</h5>
+      <h5>2-1.ES6为了改变这一点，一方面规定，为了保持兼容性，var命令和function命令声明的全局变量，依旧是顶层对象的属性；另一方面规定，let命令、const命令、class命令声明的全局变量，不属于顶层对象的属性。也就是说，从
+        ES6 开始，全局变量将逐步与顶层对象的属性脱钩。</h5>
+      <h5>3.global 对象。ES5 的顶层对象，本身也是一个问题，因为它在各种实现里面是不统一的。
+          浏览器里面，顶层对象是window，但 Node 和 Web Worker 没有window。
+          浏览器和 Web Worker 里面，self也指向顶层对象，但是 Node 没有self。
+          Node 里面，顶层对象是global，但其他环境都不支持。
+          同一段代码为了能够在各种环境，都能取到顶层对象，现在一般是使用this变量，但是有局限性。
+          全局环境中，this会返回顶层对象。但是，Node 模块和 ES6 模块中，this返回的是当前模块。
+          函数里面的this，如果函数不是作为对象的方法运行，而是单纯作为函数运行，this会指向顶层对象。但是，严格模式下，这时this会返回undefined。
+          不管是严格模式，还是普通模式，new Function('return this')()，总是会返回全局对象。但是，如果浏览器用了 CSP（Content Security Policy，内容安全策略），那么eval、new Function这些方法都可能无法使用。
+          综上所述，很难找到一种方法，可以在所有情况下，都取到顶层对象。下面是两种勉强可以使用的方法。
+      </h5>
+      <h5>3-1.现在有一个提案，在语言标准的层面，引入global作为顶层对象。也就是说，在所有环境下，global都是存在的，都可以从它拿到顶层对象。垫片库system.global模拟了这个提案，可以在所有环境拿到global。
+          <pre>
+            // CommonJS 的写法
+            require('system.global/shim')();
+            
+            // ES6 模块的写法
+            import shim from 'system.global/shim'; shim();
+            上面代码可以保证各种环境里面，global对象都是存在的。
+            
+            // CommonJS 的写法
+            var global = require('system.global')();
+            
+            // ES6 模块的写法
+            import getGlobal from 'system.global';
+            const global = getGlobal();
+          </pre>
+          上面代码将顶层对象放入变量global。
+      </h5>
+    </div>
+
+    <footer>
+      <p>
+        &copy; Copyright by LiJingTang
+      </p>
+    </footer>
+  </div>
+</body>
+
+</html>
