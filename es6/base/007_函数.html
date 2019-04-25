@@ -187,9 +187,11 @@
     // 上面代码中，cat.jumps()方法是一个箭头函数，这是错误的。调用cat.jumps()时，如果是普通函数，该方法内部的this指向cat；如果写成上面那样的箭头函数，使得this指向全局对象，因此不会得到预期结果。这是因为对象不构成单独的作用域，导致jumps箭头函数定义时的作用域就是全局作用域。
 
     var button = document.getElementById('press');
-    button.addEventListener('click', () => {
-      this.classList.toggle('on');
-    });
+    if (button) {
+      button.addEventListener('click', () => {
+        this.classList.toggle('on');
+      });
+    }
     // 上面代码运行时，点击按钮会报错，因为button的监听函数是一个箭头函数，导致里面的this就是全局对象。如果改成普通函数，this就会动态指向被点击的按钮对象。
   }
   {
@@ -320,8 +322,7 @@
         <li>函数体内的this对象，就是定义时所在的对象，而不是使用时所在的对象。</li>
         <li>不可以当作构造函数，也就是说，不可以使用new命令，否则会抛出一个错误。</li>
         <li>不可以使用arguments对象，该对象在函数体内不存在。如果要用，可以用 rest 参数代替。</li>
-        <li>不可以使用yield命令，因此箭头函数不能用作 Generator 函数。</li>
-      </h5>
+        <li>不可以使用yield命令，因此箭头函数不能用作 Generator 函数。</li></h5>
       <h5>11.this指向的固定化，并不是因为箭头函数内部有绑定this的机制，实际原因是箭头函数根本没有自己的this，导致内部的this就是外层代码块的this。正是因为它没有this，所以也就不能用作构造函数。</h5>
       <h5>12.除了this，以下三个变量在箭头函数之中也是不存在的，指向外层函数的对应变量：arguments、super、new.target。</h5>
       <h5>13.不适用场合。第一个场合是定义对象的方法，且该方法内部包括this。第二个场合是需要动态this的时候，也不应使用箭头函数。</h5>
