@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>015_Generator函数</title>
+  <meta name="description" content="">
+  <meta name="author" content="LiJingTang">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="../../images/es6.ico">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <script type="text/javascript" charset="UTF-8">
+  {
+    function* helloWorldGenerator() {
+      yield 'hello';
+      yield 'world';
+      return 'ending';
+    }
+
+    var hw = helloWorldGenerator();
+    console.log(hw.next());
+    console.log(hw.next());
+    console.log(hw.next());
+    console.log(hw.next());
+  }
+  {
+    function* f() {
+      console.log('执行了！')
+    }
+    var generator = f();
+
+    setTimeout(function () {
+      generator.next()
+    }, 2000);
+    // 函数f如果是普通函数，在为变量generator赋值时就会执行。但是，函数f是一个 Generator 函数，就变成只有调用next方法时，函数f才会执行。
+  }
+  {
+    var arr = [1, [[2, 3], 4], [5, 6]];
+    var flat = function* (a) {
+      var length = a.length;
+      for (var i = 0; i < length; i++) {
+        var item = a[i];
+        if (typeof item !== 'number') {
+          yield* flat(item);
+        } else {
+          yield item;
+        }
+      }
+    };
+
+    for (var f of flat(arr)) {
+      console.log(f);
+    }
+  }
+  {
+    function* demo() {
+      console.log('Hello' + (yield)); // OK
+      console.log('Hello' + (yield 123)); // OK
+    }
+    function* demo1() {
+      foo(yield 'a', yield 'b'); // OK
+      let input = yield; // OK
+    }
+  }
+  {
+    function* gen(){
+    }
+    var g = gen();
+    g[Symbol.iterator]() === g
+  }
+  {
+    function* f() {
+      for(var i = 0; true; i++) {
+        var reset = yield i;
+        console.log(reset);
+        if(reset) { i = -1; }
+      }
+    }
+    var g = f();
+    g.next(); // { value: 0, done: false }
+    g.next(); // { value: 1, done: false }
+    g.next(true); // { value: 0, done: false }
+  }
+  {
+    function* foo(x) {
+      var y = 2 * (yield (x + 1));
+      var z = yield (y / 3);
+      return (x + y + z);
+    }
+  }
+  {
+    function* dataConsumer() {
+      console.log('Started');
+      console.log(`1. ${yield}`);
+      console.log(`2. ${yield}`);
+      return 'result';
+    }
+
+    let genObj = dataConsumer();
+    genObj.next();
+    // Started
+    genObj.next('a');
+    // 1. a
+    genObj.next('b');
+    // 2. b
+  }
+  {
+    function* foo() {
+      yield 1;
+      yield 2;
+      yield 3;
+      yield 4;
+      yield 5;
+      return 6;
+    }
+    for (let v of foo()) {
+      console.log(v);
+    }
+  }
+  {
+    // 实现斐波那契数列的例子。
+    function* fibonacci() {
+      let [prev, curr] = [0, 1];
+      for (;;) {
+        yield curr;
+        [prev, curr] = [curr, prev + curr];
+      }
+    }
+
+    for (let n of fibonacci()) {
+      if (n > 100) break;
+      console.log(n);
+    }
+  }
+  {
+    // yield*命令可以很方便地取出嵌套数组的所有成员。
+    function* iterTree(tree) {
+      if (Array.isArray(tree)) {
+        for(let i=0; i < tree.length; i++) {
+          yield* iterTree(tree[i]);
+        }
+      } else {
+        yield tree;
+      }
+    }
+    const tree = [ 'a', ['b', 'c'], ['d', 'e'] ];
+    for(let x of iterTree(tree)) {
+      console.log(x);
+    }
+  }
+  {
+    var clock = function* () {
+      while (true) {
+        console.log('Tick!');
+        yield;
+        console.log('Tock!');
+        yield;
+      }
+    };
+  }
+  </script>
+<body>
+  <div>
+    <header>
+      <h1>Generator函数</h1>
+    </header>
+
+    <div>
+      <h5>1.Generator是 ES6 提供的一种异步编程解决方案。语法上，首先可以把它理解成，Generator 函数是一个状态机，封装了多个内部状态。执行 Generator 函数会返回一个遍历器对象，也就是说，Generator 函数除了状态机，还是一个遍历器对象生成函数。返回的遍历器对象，可以依次遍历 Generator 函数内部的每一个状态。。</h5>
+      <h5>2.Generator 函数是一个普通函数，但是有两个特征。一是，function关键字与函数名之间有一个星号；二是，函数体内部使用yield表达式，定义不同的内部状态（yield在英语里的意思就是“产出”）。</h5>
+      <h5>3.yield表达式就是暂停标志。需要注意的是，yield表达式后面的表达式，只有当调用next方法、内部指针指向该语句时才会执行，</h5>
+      <h5>4.Generator 函数可以不用yield表达式，这时就变成了一个单纯的暂缓执行函数。yield表达式只能用在 Generator 函数里面，用在其他地方都会报错。</h5>
+      <h5>5.yield表达式如果用在另一个表达式之中，必须放在圆括号里面。yield表达式用作函数参数或放在赋值表达式的右边，可以不加括号。</h5>
+      <h5>6.Generator 函数执行后，返回一个遍历器对象。该对象本身也具有Symbol.iterator属性，执行后返回自身。</h5>
+      <h5>7.yield表达式本身没有返回值，或者说总是返回undefined。next方法可以带一个参数，该参数就会被当作上一个yield表达式的返回值。</h5>
+      <h5>8.注意，由于next方法的参数表示上一个yield表达式的返回值，所以在第一次使用next方法时，传递参数是无效的。V8 引擎直接忽略第一次使用next方法时的参数，只有从第二次使用next方法开始，参数才是有效的。从语义上讲，第一个next方法用来启动遍历器对象，所以不用带有参数。</h5>
+      <h5>9.一旦next方法的返回对象的done属性为true，for...of循环就会中止，且不包含该返回对象</h5>
+      <h5>10.throw方法抛出的错误要被内部捕获，前提是必须至少执行过一次next方法。throw方法被捕获以后，会附带执行下一条yield表达式。也就是说，会附带执行一次next方法。</h5>
+      <h5>11.一旦 Generator 执行过程中抛出错误，且没有被内部捕获，就不会再执行下去了。如果此后还调用next方法，将返回一个value属性等于undefined、done属性等于true的对象，即 JavaScript 引擎认为这个 Generator 已经运行结束了。</h5>
+      <h5>12.Generator 函数返回的遍历器对象，还有一个return方法，可以返回给定的值，并且终结遍历 Generator 函数。如果return方法调用时，不提供参数，则返回值的value属性为undefined。</h5>
+      <h5>13.next()是将yield表达式替换成一个值。throw()是将yield表达式替换成一个throw语句。return()是将yield表达式替换成一个return语句。</h5>
+      <h5>14.如果在 Generator 函数内部，调用另一个 Generator 函数，默认情况下是没有效果的。这个就需要用到yield*表达式，用来在一个 Generator 函数里面执行另一个 Generator 函数。</h5>
+      <h5>15.如果yield*后面跟着一个数组，由于数组原生支持遍历器，因此就会遍历数组成员。yield命令后面如果不加星号，返回的是整个数组，加了星号就表示返回的是数组的遍历器对象。</h5>
+    </div>
+
+    <footer>
+      <p>
+        &copy; Copyright by LiJingTang
+      </p>
+    </footer>
+  </div>
+</body>
+
+</html>
