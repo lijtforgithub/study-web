@@ -3,22 +3,152 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>013_Promise</title>
+  <title>017_Class</title>
   <meta name="description" content="">
   <meta name="author" content="LiJingTang">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="shortcut icon" href="../../images/es6.ico">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <script type="text/javascript" charset="UTF-8">
+  {
+    // es5
+    function Point(x, y) {
+      this.x = x;
+      this.y = y;
+    }
+    Point.prototype.toString = function () {
+      return '(' + this.x + ', ' + this.y + ')';
+    };
+
+    var p = new Point(1, 2);
+  }
+  {
+    // es6
+    class Point {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+      }
+      toString() {
+        return '(' + this.x + ', ' + this.y + ')';
+      }
+    }
+
+    console.log(typeof Point); // "function"
+    console.log(Point === Point.prototype.constructor ); // true
+
+    let point = new Point(2, 3);
+    console.log(point.toString()); // (2, 3)
+    console.log(point.hasOwnProperty('x')); // true
+    console.log(point.hasOwnProperty('y')); // true
+    console.log(point.hasOwnProperty('toString')); // false
+    console.log(point.__proto__.hasOwnProperty('toString')); // true
+  }
+  {
+    class Foo {
+      constructor() {
+        return Object.create(null);
+      }
+    }
+    console.log(new Foo() instanceof Foo);
+  }
+  {
+    class CustomHTMLElement {
+      constructor(element) {
+        this.element = element;
+      }
+      get html() {
+        return this.element.innerHTML;
+      }
+      set html(value) {
+        this.element.innerHTML = value;
+      }
+    }
+
+    var descriptor = Object.getOwnPropertyDescriptor(
+      CustomHTMLElement.prototype, 'html'
+    );
+
+    'get' in descriptor;  // true
+    'set' in descriptor;  // true
+  }
+  {
+    let person = new class {
+      constructor(name) {
+        this.name = name;
+      }
+      sayName() {
+        console.log(this.name);
+      }
+    }('张三');
+
+    person.sayName(); 
+  }
+  {
+    class Foo {
+      constructor(...args) {
+        this.args = args;
+      }
+      * [Symbol.iterator]() {
+        for (let arg of this.args) {
+          yield arg;
+        }
+      }
+    }
+
+    for (let x of new Foo('hello', 'world')) {
+      console.log(x);
+    }
+  }
+  {
+    class IncreasingCounter {
+      _count = 0;
+      get value() {
+        console.log('Getting the current value!');
+        return this._count;
+      }
+      increment() {
+        this._count++;
+      }
+    }
+  }
+  {
+    function Person(name) {
+      if (new.target === Person) {
+        this.name = name;
+      } else {
+        throw new Error('必须使用 new 命令生成实例');
+      }
+    }
+  }
   </script>
 <body>
   <div>
     <header>
-      <h1>const命令</h1>
+      <h1>Class</h1>
     </header>
 
     <div>
-      <h5>1.const声明一个只读的常量。一旦声明，常量的值就不能改变。</h5>
+      <h5>1.JavaScript 语言中，生成实例对象的传统方法是通过构造函数。ES6 提供了更接近传统语言的写法，引入了 Class（类）这个概念，作为对象的模板。通过class关键字，可以定义类。基本上，ES6 的class可以看作只是一个语法糖，它的绝大部分功能，ES5 都可以做到，新的class写法只是让对象原型的写法更加清晰、更像面向对象编程的语法而已。</h5>
+      <h5>2.定义“类”的方法的时候，前面不需要加上function这个关键字，直接把函数定义放进去了就可以了。另外，方法之间不需要逗号分隔，加了会报错。</h5>
+      <h5>3.类的数据类型就是函数，类本身就指向构造函数。</h5>
+      <h5>4.构造函数的prototype属性，在 ES6 的“类”上面继续存在。事实上，类的所有方法都定义在类的prototype属性上面。prototype对象的constructor属性，直接指向“类”的本身，这与 ES5 的行为是一致的。</h5>
+      <h5>5.类的内部所有定义的方法，都是不可枚举的（non-enumerable）。这一点与 ES5 的行为不一致。</h5>
+      <h5>6.constructor方法是类的默认方法，通过new命令生成对象实例时，自动调用该方法。一个类必须有constructor方法，如果没有显式定义，一个空的constructor方法会被默认添加。constructor方法默认返回实例对象（即this），完全可以指定返回另外一个对象。</h5>
+      <h5>7.类必须使用new调用，否则会报错。这是它跟普通构造函数的一个主要区别，后者不用new也可以执行。</h5>
+      <h5>8.与 ES5 一样，实例的属性除非显式定义在其本身（即定义在this对象上），否则都是定义在原型上（即定义在class上）。与 ES5 一样，类的所有实例共享一个原型对象。</h5>
+      <h5>9.存值函数和取值函数是设置在属性的 Descriptor 对象上的。</h5>
+      <h5>10.类的属性名，可以采用表达式。与函数一样，类也可以使用表达式的形式定义。</h5>
+      <h5>11.类和模块的内部，默认就是严格模式，所以不需要使用use strict指定运行模式。只要你的代码写在类或模块之中，就只有严格模式可用。考虑到未来所有的代码，其实都是运行在模块之中，所以 ES6 实际上把整个语言升级到了严格模式。</h5>
+      <h5>12.类不存在变量提升（hoist），这一点与 ES5 完全不同。Foo类使用在前，定义在后，这样会报错，因为 ES6 不会把类的声明提升到代码头部。这种规定的原因与下文要提到的继承有关，必须保证子类在父类之后定义。</h5>
+      <h5>13.由于本质上，ES6 的类只是 ES5 的构造函数的一层包装，所以函数的许多特性都被Class继承，包括name属性。</h5>
+      <h5>14.类相当于实例的原型，所有在类中定义的方法，都会被实例继承。如果在一个方法前，加上static关键字，就表示该方法不会被实例继承，而是直接通过类来调用，这就称为“静态方法”。注意，如果静态方法包含this关键字，这个this指的是类，而不是实例。静态方法可以与非静态方法重名。父类的静态方法，可以被子类继承。静态方法也是可以从super对象上调用的。</h5>
+      <h5>15.实例属性除了定义在constructor()方法里面的this上面，也可以定义在类的最顶层。这种新写法的好处是，所有实例对象自身的属性都定义在类的头部，看上去比较整齐，一眼就能看出这个类有哪些实例属性。</h5>
+      <h5>16.静态属性指的是 Class 本身的属性，即Class.propName，而不是定义在实例对象（this）上的属性。目前，只有这种写法可行，因为 ES6 明确规定，Class 内部只有静态方法，没有静态属性。</h5>
+      <h5>17.new是从构造函数生成实例对象的命令。ES6 为new命令引入了一个new.target属性，该属性一般用在构造函数之中，返回new命令作用于的那个构造函数。如果构造函数不是通过new命令或Reflect.construct()调用的，new.target会返回undefined，因此这个属性可以用来确定构造函数是怎么调用的。</h5>
+      <h5>18.子类必须在constructor方法中调用super方法，否则新建实例时会报错。这是因为子类自己的this对象，必须先通过父类的构造函数完成塑造，得到与父类同样的实例属性和方法，然后再对其进行加工，加上子类自己的实例属性和方法。如果不调用super方法，子类就得不到this对象。</h5>
+      <h5>19.由于this指向子类实例，所以如果通过super对某个属性赋值，这时super就是this，赋值的属性会变成子类实例的属性。</h5>
+      <h5>20.如果super作为对象，用在静态方法之中，这时super将指向父类，而不是父类的原型对象。</h5>
     </div>
 
     <footer>

@@ -3,22 +3,81 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>013_Promise</title>
+  <title>016_async函数</title>
   <meta name="description" content="">
   <meta name="author" content="LiJingTang">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="shortcut icon" href="../../images/es6.ico">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <script type="text/javascript" charset="UTF-8">
+  {
+    function timeout(ms) {
+      return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+      });
+    }
+    async function asyncPrint(value, ms) {
+      await timeout(ms);
+      console.log(value);
+    }
+    asyncPrint('hello world', 50);
+  }
+  {
+    async function timeout(ms) {
+      await new Promise((resolve) => {
+        setTimeout(resolve, ms);
+      });
+    }
+    async function asyncPrint(value, ms) {
+      await timeout(ms);
+      console.log(value);
+    }
+    asyncPrint('hello world', 50);
+  }
+  {
+    async function f() {
+      return 'hello world';
+    }
+    f().then(v => console.log(v));
+  }
+  {
+    async function f() {
+      throw new Error('出错了');
+    }
+
+    f().then(
+      v => console.log(v),
+      e => console.log(e)
+    );
+  }
+  {
+    // async function test() {
+    //   let i;
+    //   for (i = 0; i < NUM_RETRIES; ++i) {
+    //     try {
+    //       await superagent.get('http://google.com/this-throws-an-error');
+    //       break;
+    //     } catch(err) {}
+    //   }
+    //   console.log(i); // 3
+    // }
+  }
   </script>
 <body>
   <div>
     <header>
-      <h1>const命令</h1>
+      <h1>async函数</h1>
     </header>
 
     <div>
-      <h5>1.const声明一个只读的常量。一旦声明，常量的值就不能改变。</h5>
+      <h5>1.ES2017 标准引入了 async 函数，使得异步操作变得更加方便。async 函数是什么？一句话，它就是 Generator 函数的语法糖。</h5>
+      <h5>2.async函数就是将 Generator 函数的星号（*）替换成async，将yield替换成await，仅此而已。async函数的返回值是 Promise 对象，这比 Generator 函数的返回值是 Iterator 对象方便多了。你可以用then方法指定下一步的操作。</h5>
+      <h5>3.async函数返回一个 Promise 对象。async函数内部return语句返回的值，会成为then方法回调函数的参数。</h5>
+      <h5>4.async函数返回的 Promise 对象，必须等到内部所有await命令后面的 Promise 对象执行完，才会发生状态改变，除非遇到return语句或者抛出错误。也就是说，只有async函数内部的异步操作执行完，才会执行then方法指定的回调函数。</h5>
+      <h5>5.正常情况下，await命令后面是一个 Promise 对象，返回该对象的结果。如果不是 Promise 对象，就直接返回对应的值。</h5>
+      <h5>6.任何一个await语句后面的 Promise 对象变为reject状态，那么整个async函数都会中断执行。有时，我们希望即使前一个异步操作失败，也不要中断后面的异步操作。这时可以将第一个await放在try...catch结构里面，这样不管这个异步操作是否成功，第二个await都会执行。另一种方法是await后面的 Promise 对象再跟一个catch方法，处理前面可能出现的错误。</h5>
+      <h5>7.多个await命令后面的异步操作，如果不存在继发关系，最好让它们同时触发。let [foo, bar] = await Promise.all([getFoo(), getBar()]);</h5>
+      <h5>8.await命令只能用在async函数之中，如果用在普通函数，就会报错。</h5>
     </div>
 
     <footer>
