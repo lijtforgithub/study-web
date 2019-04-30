@@ -20,7 +20,8 @@ module.exports = {
       {test: /\.less$/, use: ['style-loader', 'css-loader', 'less-loader']},
       {test: /\.scss$/, use: ['style-loader', 'css-loader', 'sass-loader']},
       {test: /\.(jpg|png|gif|bmp|jpeg)$/, use: 'url-loader?limit=2048&name=[hash:8]-[name].[ext]'}, // 单位byte
-      {test: /\.(ttf|eot|svg|woff|woff2)$/, use: 'url-loader'}
+      {test: /\.(ttf|eot|svg|woff|woff2)$/, use: 'url-loader'},
+      {test: /\.js$/, use: 'babel-loader', exclude: /node_modules/}
     ]
   }
 }
