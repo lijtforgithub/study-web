@@ -62,6 +62,24 @@
     //   console.log(i); // 3
     // }
   }
+  {
+    let p1 = new Promise((resolve, reject) => {
+      resolve('OK-1');
+    }).then(val => val);
+    let p2 = new Promise((resolve, reject) => {
+      resolve('OK-2');
+    }).then(val => val);
+
+    async function f() {
+      let v1 = await p1;
+      let v2 = await p2;
+      console.log('--------', v1);
+      console.log('--------', v2);
+    }
+
+    f();
+    console.log('end');
+  }
   </script>
 <body>
   <div>
